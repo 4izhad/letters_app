@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
+enum Password { visibility, nonVisibility }
+
 class AuthForm extends StatefulWidget {
   final void Function(
     String email,
     String password,
-    String username,
-    // File image,
-    bool isLogin,
     BuildContext ctx,
   ) submitFn;
   bool isLoading;
@@ -20,134 +19,146 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  Password _password = Password.nonVisibility;
+  // var _userEmail = '';
 
-  var _isLogin = true;
-  var _userEmail = '';
-  var _userName = '';
-  var _userPassword = '';
-  // var _userPickedImage;
-
-  // void _pickedImage(File image) {
-  //   _userPickedImage = image;
-  // }
-
-  // void _trySubmit() {
-    // final isValid = _formKey.currentState.validate();
-
-    // FocusScope.of(context).unfocus();
-
-    // if (_userPickedImage == null && !_isLogin) {
-    //   Scaffold.of(context)
-    //       .showSnackBar(SnackBar(content: Text('Please pick an image.')));
-    // }
-
-  //   if (isValid) {
-  //     _formKey.currentState.save();
-  //     widget.submitFn(
-  //       _userEmail.trim(),
-  //       _userPassword.trim(),
-  //       _userName.trim(),
-  //       // _userPickedImage,
-  //       _isLogin,
-  //       context,
-  //     );
-  //   }
-  // }
+  void _trySubmit() {
+    final isValid = _formKey.currentState.validate();
+    FocusScope.of(context).unfocus();
+    if (isValid) {
+      _formKey.currentState.save();
+      widget.submitFn(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        context,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Colors.white),
-          margin: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20), color: Colors.white),
+          margin: const EdgeInsets.all(20),
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // if (!_isLogin) UserImagePicker(_pickedImage),
-                    TextFormField(
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.none,
-                      enableSuggestions: false,
-                      key: ValueKey('Email'),
-                      validator: (value) {
-                        if(value != null){
-                        if (value.isEmpty || !value.contains('@')) {
-                          return 'Please enter a Valid email address';
-                        }}
-                        return null;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(labelText: 'Registered Email Address'),
-                      onSaved: (value) {
-                         if(value != null)
-                        _userEmail = value;
-                      },
+                    InputContainer(
+                      child: TextField(
+                        controller: _emailController,
+                        cursorColor: Colors.blue,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          icon: const Icon(
+                            Icons.email,
+                            color: Colors.blue,
+                          ),
+                          hintText: "Registered Email",
+                          hintStyle: const TextStyle(color: Colors.blue),
+                          border: InputBorder.none,
+                          suffixIcon: _emailController.text.isNotEmpty
+                              ? InkWell(
+                                  child: const Icon(Icons.clear_rounded),
+                                  onTap: () {
+                                    setState(() {
+                                      _emailController.text = "";
+                                    });
+                                  },
+                                )
+                              : null,
+                        ),
+                        style: const TextStyle(color: Colors.blue),
+                        onChanged: (_) {
+                          setState(() {});
+                        },
+                      ),
                     ),
-                    // if (!_isLogin)
-                    //   TextFormField(
-                    //     autocorrect: true,
-                    //     textCapitalization: TextCapitalization.words,
-                    //     enableSuggestions: false,
-                    //     key: ValueKey('UserName'),
-                    //     validator: (value) {
-                    //        if(value != null){
-                    //       if (value.isEmpty || value.length < 4) {
-                    //         return 'Please enter atleast 4 characters';
-                    //       }}
-                    //       return null;
-                    //     },
-                    //     decoration: InputDecoration(labelText: 'Username'),
-                    //     onSaved: (value) {
-                    //        if(value != null)
-                    //       _userName = value;
-                    //     },
-                    //   ),
-                    // TextFormField(
-                    //   key: ValueKey('Password'),
-                    //   validator: (value) {
-                    //      if(value != null){
-                    //     if (value.isEmpty || value.length < 7) {
-                    //       return 'Please enter atleast 7 characters';
-                    //     }}
-                    //     return null;
-                    //   },
-                    //   decoration: InputDecoration(labelText: 'Password'),
-                    //   obscureText: true,
-                    //   onSaved: (value) {
-                    //      if(value != null)
-                    //     _userPassword = value;
-                    //   },
-                    // ),
-                    SizedBox(height: 20,),
+                    InputContainer(
+                      child: TextField(
+                        controller: _passwordController,
+                        cursorColor: Colors.blue,
+                        obscureText:
+                            _password == Password.nonVisibility ? true : false,
+                        style: const TextStyle(color: Colors.blue),
+                        decoration: InputDecoration(
+                          icon:const  Icon(
+                            Icons.lock,
+                            color: Colors.blue,
+                          ),
+                          hintText: "Password",
+                          hintStyle: const TextStyle(color: Colors.blue),
+                          border: InputBorder.none,
+                          suffixIcon: InkWell(
+                            child: Icon(
+                              _password == Password.nonVisibility
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onTap: () {
+                              if (_password == Password.nonVisibility) {
+                                setState(() {
+                                  _password = Password.visibility;
+                                });
+                              } else {
+                                setState(() {
+                                  _password = Password.nonVisibility;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
                     if (widget.isLoading) CircularProgressIndicator(),
                     if (!widget.isLoading)
                       ElevatedButton(
-                        child: Text( 'Login'),
-                        onPressed: (){},
-                        
+                        child: Text('Login'),
+                        onPressed: _trySubmit,
                       ),
-                    // if (!widget.isLoading)
-                    //   TextButton(
-                    //     child: Text(
-                    //           ? 'Create new account?'
-                    //           : 'Already  have an account?',
-                    //     ),
-                    //     onPressed: () {
-                    //       setState(() {
-                    //         _isLogin = !_isLogin;
-                    //       });
-                    //     },
-                    //   )
                   ],
                 ),
               ),
             ),
           )),
+    );
+  }
+}
+
+class InputContainer extends StatelessWidget {
+  const InputContainer({
+    Key key,
+    @required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      width: size.width * 0.8,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: Colors.white,
+      ),
+      child: child,
     );
   }
 }

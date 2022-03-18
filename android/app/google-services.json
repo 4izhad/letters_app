@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "390992548484",
+    "project_id": "letters-app-158e3",
+    "storage_bucket": "letters-app-158e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390992548484:android:53e7a60700478a2425a8d1",
+        "android_client_info": {
+          "package_name": "com.example.letter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "390992548484-au4srs6ahrkgjqgv0fa10p1tn47v2v05.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_zq6EW3itTWgT3Q3rGXJA3AWeaS9gvQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "390992548484-au4srs6ahrkgjqgv0fa10p1tn47v2v05.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
