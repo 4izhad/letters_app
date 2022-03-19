@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:letter_app/widgets/new_message.dart';
+import 'package:letter_app/widgets/message/new_message.dart';
 
 class MessageScreen extends StatefulWidget {
+  static const String routeName = "/message_Screen";
   @override
   State<MessageScreen> createState() => _MessageScreenState();
 }
